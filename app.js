@@ -24,7 +24,7 @@ module.exports = async function (fastify, opts) {
         status: false,
         code: 429,
         error: "Too Many Requests",
-        message: `I only allow ${context.max} requests per ${context.after} to this Website. Try again soon.`,
+        message: `I only allow ${context.max} requests per ${context.after} to this API. Try again soon.`,
         date: Date.now(),
         expiresIn: context.ttl, // milliseconds
       };
