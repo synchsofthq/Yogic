@@ -8,10 +8,65 @@ const FormBody = require("@fastify/formbody");
 const RateLimit = require("@fastify/rate-limit");
 const StaticFiles = require("@fastify/static");
 const WebSocket = require("@fastify/websocket");
+const Swagger = require("@fastify/swagger");
+const BASIC_AUTH=require("@fastify/basic-auth");
+const JWT = require("@fastify/jwt");
+const {v4: uuid} = require("uuid");
+
+const docPrefix = "/api-documentation"
+const swagger_configuration = () => {
+  return {
+    routePrefix: docPrefix,
+    swagger: {
+      info: {
+        title: process.env.APP_NAME,
+        description: "Astrobot API documentation",
+        version: "1.0",
+        contact: {
+          name: 'Adarsh S, P.S.A., Synch Soft HQ',
+          url: 'https://www.synchsoft.com',
+          email: 'hello@synchsoft.com'
+        }
+      },
+      schemes: ['http', 'https', 'ws', 'wss'],
+      consumes: ["application/json"],
+      produces: ["application/json"],
+      definitions: {
+        UploadFile: {
+          type: 'object',
+          properties: {
+            file: {type: 'string', format: 'binary'},
+          },
+        },
+      },
+      securityDefinitions: {
+        apiKey: {
+          type: "apiKey",
+          name: "Authorization",
+          in: "header",
+        },
+      },
+    },
+    exposeRoute: true,
+    uiConfig: {
+      docExpansion: 'none', // expand/not all the documentations none|list|full
+      deepLinking: true
+    },
+  };
+};
+// validate function
+function validate(username, password, req, reply, done) {
+  if (username === process.env.SWAGGER_USER && password === process.env.SWAGGER_PASSWORD) {
+    done()
+  } else {
+    done(new Error('Winter is coming'))
+  }
+}
 // Pass --options via CLI arguments in command to enable these options.
 module.exports.options = {};
 
 module.exports = async function (fastify, opts) {
+
   // Place here your custom code!
   fastify.register(Cors);
   fastify.register(MultiPart);
@@ -35,6 +90,22 @@ module.exports = async function (fastify, opts) {
     prefix: "/public/", // optional: default '/'
   });
   fastify.register(WebSocket);
+
+  fastify.register(BASIC_AUTH, {
+    validate,
+    authenticate: true
+  }).after(() => {
+    fastify.addHook('onRoute', function hook(routeOptions) {
+      if (routeOptions.url.includes(docPrefix)) {
+        routeOptions.onRequest = app.basicAuth
+      }
+    })
+  });
+
+  fastify.register(Swagger, swagger_configuration());
+  fastify.register(JWT, {
+    secret: process.env.APP_KEY,
+  });
 
   // Do not touch the following lines
 
