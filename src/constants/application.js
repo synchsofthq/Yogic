@@ -5,7 +5,7 @@ module.exports = {
   ERROR_MESSAGE: "Something went wrong, try again. [Server Error]",
   NOT_FOUND: "Not Found, server cannot find the requested resource.",
   UNPROCESSABLE_REQUEST: "Unprocessable Entity, you should not repeat this request without modification.",
-  API_WELCOME_MESSAGE: "Peerpicks Backend API Fastify API, Hope you are having a good day!",
+  API_WELCOME_MESSAGE: "AstroBot Backend API Fastify API, Hope you are having a good day!",
   BAD_REQUEST: "Bad Request, you should not repeat this request without modification.",
   FORBIDDEN_REQUEST: "Forbidden Request, Access Token needs to be present on headers as Authorization: Bearer <jwt-token>.",
 };

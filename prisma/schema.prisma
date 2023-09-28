@@ -9,3 +9,84 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Accounts {
+  id             Int     @id @default(autoincrement())
+  bot            String? @unique @map("bot") @db.VarChar(255)
+  user_id        Int?
+  training_level String? @db.VarChar(255)
+  personality    String? @db.LongText
+  memory         String? @db.LongText
+  intro_msg      String? @db.VarChar(255)
+  picture        String? @default("https://picsum.photos/320")
+
+  mobile_user_id Int?
+  is_deleted     Boolean     @default(false)
+  created_at     DateTime    @default(now()) @db.Timestamp(0)
+  updated_at     DateTime    @default(now()) @updatedAt @db.Timestamp(0)
+  user           Users?      @relation(fields: [user_id], references: [id])
+  trainings      Trainings[]
+
+  @@index([bot], map: "bot")
+}
+
+model Users {
+  id                 Int        @id @default(autoincrement())
+  name               String     @default("")
+  email              String     @default("")
+  phone              String     @unique
+  passkey            String
+  time_zone          String     @default("UTC")
+  remember_token     Boolean    @default(false)
+  verified           Boolean    @default(false)
+  send_notifications Boolean    @default(true)
+  is_deleted         Boolean    @default(false)
+  created_at         DateTime   @default(now()) @db.Timestamp(0)
+  updated_at         DateTime   @default(now()) @updatedAt @db.Timestamp(0)
+  active_account     String     @default("")
+  login_type         String     @default("mobile")
+  picture            String?    @default("https://www.cloneyourself.ai/profile_pics/chad.gif")
+  accounts           Accounts[]
+}
+
+model OTPs {
+  id         Int      @id @default(autoincrement())
+  phone      String
+  otp        Int      @default(1)
+  otp_source String   @default("pre_registration")
+  used       Boolean  @default(false)
+  created_at DateTime @default(now()) @db.Timestamp(0)
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  sent_times Int      @default(1)
+
+  @@unique([phone, otp_source], name: "unique_mode_identifier")
+}
+
+model Devices {
+  id                 Int      @id @default(autoincrement())
+  uuid               String   @unique @default("")
+  device_id          String   @unique @default("")
+  device_type        String   @default("")
+  send_notifications Boolean  @default(true)
+  created_at         DateTime @default(now()) @db.Timestamp(0)
+  updated_at         DateTime @default(now()) @updatedAt @db.Timestamp(0)
+
+  @@unique([device_type, device_id], name: "unique_device_identifier")
+}
+
+model Trainings {
+  id               Int      @id @default(autoincrement())
+  ip               String?  @db.VarChar(16)
+  bot              String?  @map("bot")
+  training_level   Int?
+  question         String?
+  suggested_answer String?  @db.LongText
+  edited_answer    String?  @db.LongText
+  is_deleted       Boolean  @default(false)
+  created_at       DateTime @default(now()) @db.Timestamp(0)
+  updated_at       DateTime @default(now()) @updatedAt @db.Timestamp(0)
+
+  account Accounts? @relation(fields: [bot], references: [bot])
+
+  @@index([bot], map: "bot")
+}

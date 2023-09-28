@@ -17,7 +17,8 @@ const initial_schema = {
 };
 
 
-module.exports = function (fastify, opts, done) {
+module.exports = function (fastify, opts,done) {
+    // Initial Project
     fastify.get("/", {schema: initial_schema}, async (request, reply) => {
         let payload = {
             api_platform: os.platform(),
@@ -34,6 +35,5 @@ module.exports = function (fastify, opts, done) {
         };
         return reply.send({data: payload});
     });
-
-    done();
+    done()
 };
