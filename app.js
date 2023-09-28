@@ -9,11 +9,13 @@ const RateLimit = require("@fastify/rate-limit");
 const StaticFiles = require("@fastify/static");
 const WebSocket = require("@fastify/websocket");
 const Swagger = require("@fastify/swagger");
+const SwaggerUI = require("@fastify/swagger-ui");
+
 const BASIC_AUTH=require("@fastify/basic-auth");
 const JWT = require("@fastify/jwt");
 const {v4: uuid} = require("uuid");
 
-const docPrefix = "/api-documentation"
+const docPrefix = "/api-docs"
 const swagger_configuration = () => {
   return {
     routePrefix: docPrefix,
@@ -58,7 +60,21 @@ function validate(username, password, req, reply, done) {
 module.exports.options = {};
 
 module.exports = async function (fastify, opts) {
-
+  fastify.register(BASIC_AUTH, {
+    validate,
+    authenticate: true
+  }).after(() => {
+    fastify.addHook('onRoute', function hook(routeOptions) {
+      if (routeOptions.url.includes(docPrefix)) {
+        routeOptions.onRequest = fastify.basicAuth
+      }
+    })
+  });
+  fastify.register(Swagger);
+  fastify.register(SwaggerUI, swagger_configuration());
+  fastify.register(JWT, {
+    secret: process.env.APP_KEY,
+  });
   // Place here your custom code!
   fastify.register(Cors);
   fastify.register(MultiPart);
@@ -82,22 +98,6 @@ module.exports = async function (fastify, opts) {
     prefix: "/public/", // optional: default '/'
   });
   fastify.register(WebSocket);
-
-  fastify.register(BASIC_AUTH, {
-    validate,
-    authenticate: true
-  }).after(() => {
-    fastify.addHook('onRoute', function hook(routeOptions) {
-      if (routeOptions.url.includes(docPrefix)) {
-        routeOptions.onRequest = app.basicAuth
-      }
-    })
-  });
-
-  fastify.register(Swagger, swagger_configuration());
-  fastify.register(JWT, {
-    secret: process.env.APP_KEY,
-  });
 
   // Do not touch the following lines
 
