@@ -31,14 +31,6 @@ const swagger_configuration = () => {
       schemes: ['http', 'https', 'ws', 'wss'],
       consumes: ["application/json"],
       produces: ["application/json"],
-      definitions: {
-        UploadFile: {
-          type: 'object',
-          properties: {
-            file: {type: 'string', format: 'binary'},
-          },
-        },
-      },
       securityDefinitions: {
         apiKey: {
           type: "apiKey",
