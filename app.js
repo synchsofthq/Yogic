@@ -11,44 +11,55 @@ const WebSocket = require("@fastify/websocket");
 const Swagger = require("@fastify/swagger");
 const SwaggerUI = require("@fastify/swagger-ui");
 
-const BASIC_AUTH=require("@fastify/basic-auth");
+const BASIC_AUTH = require("@fastify/basic-auth");
 const JWT = require("@fastify/jwt");
 const {v4: uuid} = require("uuid");
 const routes = require("./src/routes/api.routes");
+const {promises: fs} = require("fs");
 
 const docPrefix = "/api-docs"
+
 const swagger_configuration = () => {
   return {
-    routePrefix: docPrefix,
     swagger: {
       info: {
         title: process.env.APP_NAME,
-        description: "Astrobot API documentation",
+        description: "NovaAI API documentation",
         version: "1.0",
         contact: {
-          name: 'Adarsh S, P.S.A., Synch Soft HQ',
+          name: 'Adarsh S, P.S.A.',
           url: 'https://www.synchsoft.com',
           email: 'hello@synchsoft.com'
         }
       },
-      schemes: ['http', 'https', 'ws', 'wss'],
+      schemes: ["http", "https", 'ws', 'wss'],
       consumes: ["application/json"],
       produces: ["application/json"],
       securityDefinitions: {
-        apiKey: {
-          type: "apiKey",
+        Bearer: {
+          type: "oauth2",
           name: "Authorization",
           in: "header",
         },
       },
     },
+  }
+};
+const swagger_ui_configuration = () => {
+  return {
+    routePrefix: docPrefix,
     exposeRoute: true,
+    security: {
+      Bearer: []
+    },
     uiConfig: {
-      docExpansion: 'none', // expand/not all the documentations none|list|full
+      docExpansion: 'list', // expand/not all the documentations none|list|full
       deepLinking: true
     },
+
   };
 };
+
 // validate function
 function validate(username, password, req, reply, done) {
   if (username === process.env.SWAGGER_USER && password === process.env.SWAGGER_PASSWORD) {
@@ -57,6 +68,7 @@ function validate(username, password, req, reply, done) {
     done(new Error('Winter is coming'))
   }
 }
+
 // Pass --options via CLI arguments in command to enable these options.
 module.exports.options = {};
 
@@ -71,10 +83,15 @@ module.exports = async function (fastify, opts) {
       }
     })
   });
-  fastify.register(Swagger);
-  fastify.register(SwaggerUI, swagger_configuration());
+  fastify.register(Swagger, swagger_configuration());
+  fastify.register(SwaggerUI, swagger_ui_configuration());
+  const publicKey = await fs.readFile('./certs/oauth-public.key');
+  const privateKey = await fs.readFile('./certs/oauth-private.key');
   fastify.register(JWT, {
-    secret: process.env.APP_KEY,
+    secret: {
+      private: privateKey,
+      public: publicKey
+    }
   });
   // Place here your custom code!
   fastify.register(Cors);
