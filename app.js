@@ -24,7 +24,7 @@ const swagger_configuration = () => {
     swagger: {
       info: {
         title: process.env.APP_NAME,
-        description: "NovaAI API documentation",
+        description: "Astrobot API documentation",
         version: "1.0",
         contact: {
           name: 'Adarsh S, P.S.A.',
