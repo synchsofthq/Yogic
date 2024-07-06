@@ -9,3 +9,5 @@ npm i
 npx prisma db push
 
 echo "All done"
+
+pm2 restart all
