@@ -33,11 +33,45 @@ model Slots {
 model Categories {
   id               Int      @id @default(autoincrement())
   name             String?
-  slug             String?
+  slug             String   @unique
   description      String?
   subtitle         String?
   background_image String?
+  paid             Boolean  @default(false)
+  has_levels       Boolean  @default(false)
   deleted          Boolean  @default(false)
   created_at       DateTime @default(now())
   updated_at       DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  levels           Levels[]
+}
+
+model Levels {
+  id               Int           @id @default(autoincrement())
+  category_slug    String?
+  name             String?
+  description      String?
+  plays            Int?
+  slug             String        @unique
+  paid             Boolean       @default(false)
+  background_image String?
+  deleted          Boolean       @default(false)
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @default(now()) @updatedAt @db.Timestamp(0)
+  categories       Categories?   @relation(fields: [category_slug], references: [slug])
+  music_tracks     MusicTracks[]
+}
+
+model MusicTracks {
+  id          Int      @id @default(autoincrement())
+  level_slug  String?
+  name        String?
+  description String?
+  duration    Int?
+  album_art   String?  @default("https://picsum.photos/480")
+  media_url   String?
+  paid        Boolean  @default(false)
+  deleted     Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  Levels      Levels?  @relation(fields: [level_slug], references: [slug])
 }

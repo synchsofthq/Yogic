@@ -1,2 +1,2 @@
-module.exports.bots = require('./bot.schema')
+module.exports.app = require('./app.schema')
 // Main Services
