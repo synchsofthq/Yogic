@@ -25,7 +25,7 @@ module.exports = {
                 slot: {
                     type: 'string', description: "Slot Confirmation"
                 }
-            }, required: ['slug']
+            }, required: ['slot','slug']
         },
         response: response_mediums
     },
