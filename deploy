@@ -1,0 +1,11 @@
+#!/bin/bash
+
+git stash
+
+git pull origin main
+
+npm i
+
+npx prisma db push
+
+echo "All done"
