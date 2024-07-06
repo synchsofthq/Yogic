@@ -1,2 +1,2 @@
 
-module.exports.bots = require('./app-api/bot.controller')
+module.exports.app = require('./app-api/app.controller')

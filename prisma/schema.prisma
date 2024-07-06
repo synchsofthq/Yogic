@@ -19,3 +19,25 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }
+
+model Slots {
+  id         Int      @id @default(autoincrement())
+  name       String?
+  slug       String?
+  color      String?
+  deleted    Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamp(0)
+}
+
+model Categories {
+  id               Int      @id @default(autoincrement())
+  name             String?
+  slug             String?
+  description      String?
+  subtitle         String?
+  background_image String?
+  deleted          Boolean  @default(false)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now()) @updatedAt @db.Timestamp(0)
+}

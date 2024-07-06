@@ -1,12 +1,12 @@
 const response_mediums = require("../schema/common/response");
 const header_mediums = require("../schema/common/header");
 
-const tags_title = ['Bots'];
-const tags_description = 'Bots';
+const tags_title = ['App'];
+const tags_description = 'App';
 
 module.exports = {
-    get_celebrity_bots: {
-        description: 'Get All AstroBots',
+    get_app_configurations: {
+        description: 'Get App Initial Configurations',
         tags: tags_title,
         summary: 'Retrieve AstroBots',
         // headers:header_mediums,
