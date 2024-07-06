@@ -9,13 +9,13 @@ module.exports = function (fastify, opts, done) {
         handler: controller.app.app_configurations,
     });
 
-    fastify.get("/category/:slug/levels", {
+    fastify.get("/category/:slug/levels/:slot", {
         // onRequest: [fastify.authenticate],
         schema: schema.app.get_by_slug_id,
         handler: controller.app.retrieve_category_levels_by_slug,
     });
 
-    fastify.get("/level/:slug/music-tracks", {
+    fastify.get("/level/:slug/music-tracks/:slot", {
         // onRequest: [fastify.authenticate],
         schema: schema.app.get_by_slug_id,
         handler: controller.app.retrieve_music_tracks_by_slug,

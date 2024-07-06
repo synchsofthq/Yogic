@@ -21,6 +21,9 @@ module.exports = {
             type: 'object', properties: {
                 slug: {
                     type: 'string', description: "Slug Confirmation"
+                },
+                slot: {
+                    type: 'string', description: "Slot Confirmation"
                 }
             }, required: ['slug']
         },
