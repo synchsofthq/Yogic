@@ -29,7 +29,7 @@ module.exports = {
     },
     retrieve_music_tracks_by_slug: async (request, reply) => {
         try {
-            let music_tracks = await prisma.levels.findMany({where:{slug:request.params.slug,deleted:false}, include:{music_tracks:{where:{deleted:false}}}})
+            let music_tracks = await prisma.levels.findFirstOrThrow({where:{slug:request.params.slug,deleted:false}, include:{music_tracks:{where:{deleted:false}}}})
             return reply.code(200).send({data: {music_tracks}});
         } catch (error) {
             console.log(error);
