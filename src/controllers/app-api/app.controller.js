@@ -73,7 +73,7 @@ module.exports = {
                     if (existingPose) {
                         // Update the pose with new information
                         await prisma.pose.update({
-                            where: {id: existingPose.id},
+                            where: {sanskrit_name: pose.sanskrit_name},
                             data: {
                                 procedure:pose.procedure,
                                 target_body_parts:pose.target_body_parts,
