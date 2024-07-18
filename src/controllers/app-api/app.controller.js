@@ -65,7 +65,7 @@ module.exports = {
                 console.log(`Searching ${pose.sanskrit_name}`)
                     // Find the pose in the database by sanskrit_name
                     const existingPose = await prisma.pose.findFirst({
-                        where: {sanskrit_name: pose.sanskrit_name}
+                        where: {sanskrit_name_adapted: pose.sanskrit_name}
                     });
 
                 console.log(existingPose)
@@ -73,7 +73,7 @@ module.exports = {
                     if (existingPose) {
                         // Update the pose with new information
                         await prisma.pose.updateMany({
-                            where: {sanskrit_name: pose.sanskrit_name},
+                            where: {sanskrit_name_adapted: pose.sanskrit_name},
                             data: {
                                 procedure:pose.procedure,
                                 target_body_parts:pose.target_body_parts,
