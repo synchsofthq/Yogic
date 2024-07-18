@@ -9,9 +9,44 @@ module.exports = {
     app_configurations: async (request, reply) => {
         try {
             let app_configurations = {}
-            app_configurations.time_slots=await prisma.slots.findMany({where:{deleted:false}})
-            app_configurations.categories=await prisma.categories.findMany({where:{deleted:false}})
+            app_configurations.time_slots = await prisma.slots.findMany({where: {deleted: false}})
+            app_configurations.categories = await prisma.categories.findMany({where: {deleted: false}})
             return reply.code(200).send({data: {app_configurations}});
+        } catch (error) {
+            console.log(error);
+            return reply.code(422).send({error: {...error}});
+        }
+    },
+
+    seed_yoga_data: async (request, reply) => {
+        try {
+            let yoga_data = await axios.get("https://yoga-api-nzy4.onrender.com/v1/categories");
+            yoga_data = yoga_data.data;
+
+            for (const category of yoga_data) {
+                const createdCategory = await prisma.yogaCategory.create({
+                    data: {
+                        category_name: category.category_name,
+                        category_description: category.category_description,
+                        poses: {
+                            create: category.poses.map(pose => ({
+                                english_name: pose.english_name,
+                                sanskrit_name_adapted: pose.sanskrit_name_adapted,
+                                sanskrit_name: pose.sanskrit_name,
+                                translation_name: pose.translation_name,
+                                pose_description: pose.pose_description,
+                                pose_benefits: pose.pose_benefits,
+                                url_svg: pose.url_svg,
+                                url_png: pose.url_png,
+                                url_svg_alt: pose.url_svg_alt,
+                            }))
+                        }
+                    }
+                });
+                console.log(`Created category with id: ${createdCategory.id}`);
+            }
+
+            return reply.code(200).send({data: {yoga_data}});
         } catch (error) {
             console.log(error);
             return reply.code(422).send({error: {...error}});
@@ -20,16 +55,50 @@ module.exports = {
 
     retrieve_category_levels_by_slug: async (request, reply) => {
         try {
-            let categories = await prisma.categories.findFirstOrThrow({where:{slug:request.params.slug,has_levels:true,deleted:false}, include:{levels:{where:{deleted:false}}}})
+            let categories = await prisma.categories.findFirstOrThrow({
+                    where: {
+                        slug: request.params.slug,
+                        has_levels: true,
+                        deleted: false
+                    }, include: {levels: {where: {deleted: false}}}
+                })
+
             return reply.code(200).send({data: {categories}});
         } catch (error) {
             console.log(error);
             return reply.code(422).send({error: {...error}});
         }
     },
+
+    retrieve_yoga_categories: async (request, reply) => {
+        try {
+            let yoga_categories = await prisma.yogaCategory.findMany({where:{deleted:false}})
+            return reply.code(200).send({data: {yoga_categories}});
+        } catch (error) {
+            console.log(error);
+            return reply.code(422).send({error: {...error}});
+        }
+    },
+
+    retrieve_yoga_poses_by_id: async (request, reply) => {
+        try {
+            let yoga = await prisma.yogaCategory.findMany({where:{id:request.params.id,deleted:false},include:{poses:{where:{deleted:false}}}})
+            return reply.code(200).send({data: {yoga}});
+        } catch (error) {
+            console.log(error);
+            return reply.code(422).send({error: {...error}});
+        }
+    },
+
+
     retrieve_music_tracks_by_slug: async (request, reply) => {
         try {
-            let music_tracks = await prisma.musicTracks.findMany({where:{level_slug:request.params.slug,deleted:false}})
+            let music_tracks = await prisma.musicTracks.findMany({
+                where: {
+                    level_slug: request.params.slug,
+                    deleted: false
+                }
+            })
             return reply.code(200).send({data: {music_tracks}});
         } catch (error) {
             console.log(error);

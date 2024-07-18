@@ -29,4 +29,17 @@ module.exports = {
         },
         response: response_mediums
     },
+    get_by_id: {
+        description: 'Get Resources by ID',
+        tags: tags_title,
+        summary: 'Retrieve Resources by Id and Properties',
+        params: {
+            type: 'object', properties: {
+                id: {
+                    type: 'number', description: "id"
+                }
+            }, required: ['id']
+        },
+        response: response_mediums
+    },
 }

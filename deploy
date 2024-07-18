@@ -1,13 +1,12 @@
 #!/bin/bash
-
+echo "Stash All Changes which were on server."
 git stash
-
+echo "Pulling from Git."
 git pull origin main
-
+echo "Installing NPM changes now."
 npm i
-
+echo "Pushing DB changes now."
 npx prisma db push
-
 echo "All done"
-
+echo "Restarting PM2 now."
 pm2 restart all

@@ -75,3 +75,34 @@ model MusicTracks {
   updated_at  DateTime @default(now()) @updatedAt @db.Timestamp(0)
   Levels      Levels?  @relation(fields: [level_slug], references: [slug])
 }
+
+model YogaCategory {
+  id                   Int      @id @default(autoincrement())
+  category_name        String
+  category_description String   @db.MediumText
+  background_image     String?
+  paid                 Boolean  @default(false)
+  poses                Pose[]
+  deleted              Boolean  @default(false)
+  created_at           DateTime @default(now())
+  updated_at           DateTime @default(now()) @updatedAt @db.Timestamp(0)
+}
+
+model Pose {
+  id                    Int          @id @default(autoincrement())
+  category_id           Int
+  category              YogaCategory @relation(fields: [category_id], references: [id])
+  english_name          String
+  sanskrit_name_adapted String?
+  sanskrit_name         String?
+  translation_name      String?
+  pose_description      String?      @db.MediumText
+  pose_benefits         String?      @db.MediumText
+  url_svg               String?
+  url_png               String?
+  url_svg_alt           String?
+  carousel              Json?
+  deleted               Boolean      @default(false)
+  created_at            DateTime     @default(now())
+  updated_at            DateTime     @default(now()) @updatedAt @db.Timestamp(0)
+}
