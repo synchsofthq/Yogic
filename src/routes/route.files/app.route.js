@@ -14,6 +14,14 @@ module.exports = function (fastify, opts, done) {
         handler: controller.app.seed_yoga_data,
     });
 
+    fastify.get("/update-yoga-data", {
+        // onRequest: [fastify.authenticate],
+        schema: schema.app.get_app_configurations,
+        handler: controller.app.update_yoga_data,
+    });
+
+
+
     fastify.get("/category/:slot/:slug/levels", {
         // onRequest: [fastify.authenticate],
         schema: schema.app.get_by_slug_id,

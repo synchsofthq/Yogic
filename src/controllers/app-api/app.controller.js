@@ -4,6 +4,7 @@ const axios = require("axios");
 const utilities = require("../../common-helpers/utilities");
 const jwt = require("jsonwebtoken");
 const APP = require("../../lib/app")
+const fs = require('fs');
 
 module.exports = {
     app_configurations: async (request, reply) => {
@@ -53,15 +54,56 @@ module.exports = {
         }
     },
 
+    update_yoga_data: async (request, reply) => {
+        try {
+            let message = "";
+            const jsonData = JSON.parse(fs.readFileSync('yoga-api.json', 'utf8'));
+            console.log(jsonData.length)
+            for (const pose of jsonData) {
+
+                console.log(pose)
+                console.log(`Searching ${pose.sanskrit_name}`)
+                    // Find the pose in the database by sanskrit_name
+                    const existingPose = await prisma.pose.findFirst({
+                        where: {sanskrit_name: pose.sanskrit_name}
+                    });
+
+                console.log(existingPose)
+
+                    if (existingPose) {
+                        // Update the pose with new information
+                        await prisma.pose.update({
+                            where: {id: existingPose.id},
+                            data: {
+                                procedure:pose.procedure,
+                                target_body_parts:pose.target_body_parts,
+                                benefits:pose.benefits,
+                                contraindications:pose.contraindications,
+                                yt_videos:pose.yt_videos
+                            }
+                        });
+
+                        message += `Updated pose: ${pose.sanskrit_name} \n`;
+                    } else {
+                        message += `Pose not found: ${pose.sanskrit_name} \n`;
+                    }
+            }
+            return reply.code(200).send({data: {log:message}});
+        } catch (error) {
+            console.log(error);
+            return reply.code(422).send({error: {...error}});
+        }
+    },
+
     retrieve_category_levels_by_slug: async (request, reply) => {
         try {
             let categories = await prisma.categories.findFirstOrThrow({
-                    where: {
-                        slug: request.params.slug,
-                        has_levels: true,
-                        deleted: false
-                    }, include: {levels: {where: {deleted: false}}}
-                })
+                where: {
+                    slug: request.params.slug,
+                    has_levels: true,
+                    deleted: false
+                }, include: {levels: {where: {deleted: false}}}
+            })
 
             return reply.code(200).send({data: {categories}});
         } catch (error) {
@@ -72,7 +114,7 @@ module.exports = {
 
     retrieve_yoga_categories: async (request, reply) => {
         try {
-            let yoga_categories = await prisma.yogaCategory.findMany({where:{deleted:false}})
+            let yoga_categories = await prisma.yogaCategory.findMany({where: {deleted: false}})
             return reply.code(200).send({data: {yoga_categories}});
         } catch (error) {
             console.log(error);
@@ -82,7 +124,10 @@ module.exports = {
 
     retrieve_yoga_poses_by_id: async (request, reply) => {
         try {
-            let yoga = await prisma.yogaCategory.findMany({where:{id:request.params.id,deleted:false},include:{poses:{where:{deleted:false}}}})
+            let yoga = await prisma.yogaCategory.findMany({
+                where: {id: request.params.id, deleted: false},
+                include: {poses: {where: {deleted: false}}}
+            })
             return reply.code(200).send({data: {yoga}});
         } catch (error) {
             console.log(error);

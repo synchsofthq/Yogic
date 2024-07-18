@@ -102,6 +102,11 @@ model Pose {
   url_png               String?
   url_svg_alt           String?
   carousel              Json?
+  procedure             Json?
+  target_body_parts     Json?
+  benefits              Json?
+  contraindications     Json?
+  yt_videos             Json?
   deleted               Boolean      @default(false)
   created_at            DateTime     @default(now())
   updated_at            DateTime     @default(now()) @updatedAt @db.Timestamp(0)
