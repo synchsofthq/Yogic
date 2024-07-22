@@ -124,7 +124,7 @@ module.exports = {
 
     retrieve_yoga_poses_by_id: async (request, reply) => {
         try {
-            let yoga = await prisma.yogaCategory.findMany({
+            let yoga = await prisma.yogaCategory.findFirstOrThrow({
                 where: {id: request.params.id, deleted: false},
                 include: {poses: {where: {deleted: false}}}
             })

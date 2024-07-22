@@ -89,25 +89,29 @@ model YogaCategory {
 }
 
 model Pose {
-  id                    Int          @id @default(autoincrement())
-  category_id           Int
-  category              YogaCategory @relation(fields: [category_id], references: [id])
+  id              Int          @id @default(autoincrement())
+  category_id     Int
+  category        YogaCategory @relation(fields: [category_id], references: [id])
+  color_code      String?
+  dificulty_level String?      @default("Easy")
+  tags            Json?        @default("[]")
+
   english_name          String
   sanskrit_name_adapted String?
   sanskrit_name         String?
   translation_name      String?
-  pose_description      String?      @db.MediumText
-  pose_benefits         String?      @db.MediumText
+  pose_description      String?  @db.MediumText
+  pose_benefits         String?  @db.MediumText
   url_svg               String?
   url_png               String?
   url_svg_alt           String?
-  carousel              Json?
-  procedure             Json?
-  target_body_parts     Json?
-  benefits              Json?
-  contraindications     Json?
-  yt_videos             Json?
-  deleted               Boolean      @default(false)
-  created_at            DateTime     @default(now())
-  updated_at            DateTime     @default(now()) @updatedAt @db.Timestamp(0)
+  carousel              Json?    @default("[]")
+  procedure             Json?    @default("[]")
+  target_body_parts     Json?    @default("[]")
+  benefits              Json?    @default("[]")
+  contraindications     Json?    @default("[]")
+  yt_videos             Json?    @default("[]")
+  deleted               Boolean  @default(false)
+  created_at            DateTime @default(now())
+  updated_at            DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }

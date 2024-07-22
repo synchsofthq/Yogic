@@ -40,8 +40,6 @@ module.exports = function (fastify, opts, done) {
         handler: controller.app.retrieve_yoga_poses_by_id,
     });
 
-
-
     fastify.get("/level/:slot/:slug/music-tracks", {
         // onRequest: [fastify.authenticate],
         schema: schema.app.get_by_slug_id,
