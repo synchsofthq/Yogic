@@ -8,17 +8,17 @@ module.exports = function (fastify, opts, done) {
         schema: schema.app.get_app_configurations,
         handler: controller.app.app_configurations,
     });
-    fastify.get("/seed-yoga-data", {
-        // onRequest: [fastify.authenticate],
-        schema: schema.app.get_app_configurations,
-        handler: controller.app.seed_yoga_data,
-    });
-
-    fastify.get("/update-yoga-data", {
-        // onRequest: [fastify.authenticate],
-        schema: schema.app.get_app_configurations,
-        handler: controller.app.update_yoga_data,
-    });
+    // fastify.get("/seed-yoga-data", {
+    //     // onRequest: [fastify.authenticate],
+    //     schema: schema.app.get_app_configurations,
+    //     handler: controller.app.seed_yoga_data,
+    // });
+    //
+    // fastify.get("/update-yoga-data", {
+    //     // onRequest: [fastify.authenticate],
+    //     schema: schema.app.get_app_configurations,
+    //     handler: controller.app.update_yoga_data,
+    // });
 
 
 
